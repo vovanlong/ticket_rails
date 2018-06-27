@@ -13,8 +13,8 @@ class Api::V1::EventsController < ApplicationController
     @event =  Event.new events_params
     if @event.save
       render json:{ status: "success", data: @event.id }, status: :ok
-    else
-  end
+    end
+end
 
   private
 

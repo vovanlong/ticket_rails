@@ -1,0 +1,2 @@
+class Stick < ApplicationRecord
+end
