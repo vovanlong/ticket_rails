@@ -6,6 +6,9 @@ ruby '2.5.1'
 gem 'rails', '~> 5.2.0'
 gem 'sqlite3'
 gem 'puma', '~> 3.11'
+gem 'bcrypt', '~> 3.1', '>= 3.1.12'
+gem 'jwt'
+gem 'rack-cors', '~> 1.0', '>= 1.0.2'
 gem "faker", :git => "https://github.com/stympy/faker.git", :branch => "master"
 gem 'bootsnap', '>= 1.1.0', require: false
 group :development, :test do
