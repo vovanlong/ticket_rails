@@ -8,6 +8,8 @@ gem 'sqlite3'
 gem 'puma', '~> 3.11'
 gem 'bcrypt', '~> 3.1', '>= 3.1.12'
 gem 'jwt'
+gem 'pry-rails'
+gem 'simple_command', '~> 0.0.9'
 gem 'rack-cors', '~> 1.0', '>= 1.0.2'
 gem "faker", :git => "https://github.com/stympy/faker.git", :branch => "master"
 gem 'bootsnap', '>= 1.1.0', require: false

@@ -31,3 +31,10 @@
 
 en:
   hello: "Hello world"
+  # activerecord:
+  #   models:
+  #     user:
+  #       attributes:
+  #         email: 
+  #           taken: "This field can't be empty"
+
