@@ -1,12 +1,12 @@
 module Api
   module V1
     class EventsController < ApplicationController
-      skip_before_action :authenticate_request
       before_action :set_events, only: [:show]
-
+      # after_action only: [:index] { set_pagination_headers :events }
 
       def index
-        @events = Event.all
+        @events = Event.page(page).per(per_page)
+        #set_pagination_headers
         render json:{ status: "success", data: @events }
       end
 
@@ -19,76 +19,39 @@ module Api
        if @event.save!
          render json:{ status: payload[:user_id], data: @event.id }, status: :ok
        else
-         render json: {status: "errors"}
+         render json: {status: @event.errors}, status: :unprocessable_entity
        end
       end
-      
-      def set_token
+
+      def update
+        binding.pry
+        @event = Event.find_by id: params[:id]
+        if @event.update(event_params)
+          render json: { status: "success" }
+        else
+          render json: {status: @event.errors}, status: :unprocessable_entity
+        end
       end
-      
 
-      def get_token
-    
-        payload
-        render json: { status: payload[:user_id] }
+      def destroy
+        @event = Event.find_by id: params[:id]
+        @event.destroy
+        render json: {status: 'SUCCESS', message: 'Deleted  events', data:@event}, status: :ok
       end
-        # command = AuthorizeApiRequest.call
-        # payload = { data: 'test' }
-        # token = JWT.encode payload, "vovanlong1", 'HS256'
-        # decoded_token = JWT.decode "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1MzAyNzM4NzR9.EbRCenhAppXJre0lK_PRhYR8BcxMi8SwjijXA2daqhA", nil, false
-        # render json: {status:command.result}
-
- 
-
 
       private
 
-      def payload
-        binding.pry
-        auth_header = request.headers['Authorization']
-        token = auth_header.split(' ').last
-        JsonWebToken.decode(token)
-      rescue
-        nil
-      end
-      # attr_reader :headers
 
-      # def http_auth_header
-      # binding.pry
-      #   if headers['Authorization'].present?
-      #     return headers['Authorization'].split(' ').last
-      #   else errors.add(:token, 'Missing token')
-      #   end
-      #   nil
-      # end
-
-      # def decoded_auth_token
-      # @decoded_auth_token ||= JsonWebToken.decode(http_auth_header)
-      # end
-  
-      # def http_auth_header
-      #   binding.pry
-      #   if headers['Authorization'].present?
-      #     return headers['Authorization'].split(' ').last
-      #   # else errors.add(:token, 'Missing token')
-      #   end
-      #   # nil
-      # end
-
-       #  def decoded_auth_token
-       # #   binding.pry
-       #    @decoded_auth_token ||= JsonWebToken.decode(http_auth_header)
-       #  end
-
-       #  def http_auth_header
-       #    binding.pry
-       #    if headers['Authorization'].present?
-       #      return headers['Authorization'].split(' ').last
-       #    end
-       #  end
+        def payload
+          # binding.pry
+          auth_header = request.headers['Authorization']
+          token = auth_header.split(' ').last
+          JsonWebToken.decode(token)
+        rescue
+          nil
+        end
 
         def set_events
-           # binding.pry
           @event = Event.find_by id: params[:id]
           if @event.nil?
             render json: {status: 'EVENT_NOT_EXISTED'}, status: :unprocessable_entity
@@ -98,17 +61,17 @@ module Api
         end
 
         def event_params
-          params.permit(
-            :name,
-            :description, 
-            :start_date, 
-            :end_date, 
-            :picture
-            )
-          
-           # params.require(:events).permit :name, :description, :start_date, :end_date, :picture 
+          binding.pry
+          params.permit(:name, :description, :start_date, :end_date, :picture)
         end
 
+        def page
+          @page ||= params[:page] || 1
+        end
+
+        def per_page
+          @per_page ||= params[:per_page] || 10
+        end
      end
-    end
   end
+end

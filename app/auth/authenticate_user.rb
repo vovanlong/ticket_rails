@@ -21,6 +21,7 @@ class AuthenticateUser
       # binding.pry
       user = User.find_by_name(name)
       return    user if user && user.authenticate(password)
+  
       errors.add :user_authentication, 'Invalid credentials'
       nil
     end
